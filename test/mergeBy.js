@@ -35,4 +35,38 @@ QUnit.module("Тестируем функцию mergeBy", function() {
             { id: 2, name: "Bob", age: 25 }
         ]);
     });
+
+    QUnit.test("Работает правильно", function(assert) {
+        const array1 = [
+            { id: 1, name: "Alice", tags: ["friend"] },
+            { id: 2, name: "Bob", tags: ["colleague"] }
+        ];
+        const array2 = [
+            { id: 3, name: "Charlie" },
+            {id: 4, tags: ["travel"] }
+        ];
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, [
+            { id: 1, name: "Alice", tags: ["friend"]},
+            { id: 2, name: "Bob", tags: ["colleague"] },
+            { id: 3, name: "Charlie" },
+            { id: 4, tags: ["travel"]}
+        ]);
+    });
+
+    QUnit.test("Работает правильно с пустым масивом ", function(assert) {
+        const array1 = [
+            { id: 1, name: "Alice" },
+            { id: 2, name: "Bob" }
+        ];
+        const array2 = [
+        ];
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, [
+            { id: 1, name: "Alice" },
+            { id: 2, name: "Bob"}
+        ]);
+    });
 });
