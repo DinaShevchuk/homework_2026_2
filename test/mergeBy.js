@@ -1,7 +1,7 @@
 'use strict';
 
 QUnit.module("Тестируем функцию mergeBy", function() {
-    QUnit.test("Работает правильно с одинаковыми значениями по ключу", function(assert) {
+    QUnit.test("Объединяет объекты с одинаковыми значениями по ключу", function(assert) {
         const array1 = [
             { id: 1, name: "Alice", tags: ["friend"] },
             { id: 2, name: "Bob", tags: ["colleague"] }
@@ -19,7 +19,7 @@ QUnit.module("Тестируем функцию mergeBy", function() {
         ]);
     });
 
-    QUnit.test("Работает правильно с отсутствующими ключами", function(assert) {
+    QUnit.test("Пропускает объекты без указанного ключа", function(assert) {
         const array1 = [
             { id: 1, name: "Alice" },
             { id: 2, name: "Bob" }
@@ -36,7 +36,7 @@ QUnit.module("Тестируем функцию mergeBy", function() {
         ]);
     });
 
-    QUnit.test("Работает правильно с пустым массивом", function(assert) {
+    QUnit.test("Возвращает исходные объекты при пустом втором массиве", function(assert) {
         const array1 = [
             { id: 1, name: "Alice" },
             { id: 2, name: "Bob" }
@@ -51,7 +51,7 @@ QUnit.module("Тестируем функцию mergeBy", function() {
         ]);
     });
 
-    QUnit.test("Работает правильно с дубликатами в слиянии ", function(assert) {
+    QUnit.test("Объединяет массивы с дубликатоами ", function(assert) {
         const array1 = [
             {id: 1, tags: ["Alice", "Bob"] }
         ];
@@ -65,7 +65,7 @@ QUnit.module("Тестируем функцию mergeBy", function() {
         ]);
     });
 
-    QUnit.test("Работает правильно с дубликатами ключа в одном массиве ", function(assert) {
+    QUnit.test("Сливает дубликаты ключа внутри одного массива", function(assert) {
         const array1 = [
             {id: 1, name: "Alice"}, {id:1, age: 23}
         ];
@@ -79,7 +79,7 @@ QUnit.module("Тестируем функцию mergeBy", function() {
         ]);
     });
 
-    QUnit.test("Работает правильно с не массивами ", function(assert) {
+    QUnit.test("Бросает TypeError при невалидных массивах", function(assert) {
         assert.throws(
             () => mergeBy("abc", [], "id"),
             (err) => err instanceof TypeError && /arr1 должен быть массивом/.test(err.message)
@@ -94,7 +94,7 @@ QUnit.module("Тестируем функцию mergeBy", function() {
         );
     });
 
-    QUnit.test("Работает правильно с если ошибка в ключе ", function(assert) {
+    QUnit.test("Бросает TypeError при невалидном ключе", function(assert) {
         assert.throws(
             () => mergeBy([], [], ""),
             (err) => err instanceof TypeError && /key должен быть не пустой строкой/.test(err.message)
@@ -107,6 +107,13 @@ QUnit.module("Тестируем функцию mergeBy", function() {
             () => mergeBy([], [], null),
             (err) => err instanceof TypeError && /key должен быть не пустой строкой/.test(err.message)
         );
+        assert.throws(
+            () => mergeBy([], [], 0),
+            (err) => err instanceof TypeError && /key должен быть не пустой строкой/.test(err.message)
+        );
     });
 
+    QUnit.test('Возвращает пустой массив при пустых входных данных', function (assert) {
+        assert.deepEqual(mergeBy([], [], 'id'), []);
+    });
 });

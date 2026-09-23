@@ -51,21 +51,18 @@ const mergeInto = (target, source, key) => {
     return target;
 };
 
-/**
- * Объединяет два массива объектов по значению ключа `key`.
- *
- * @param {Array<Object>} arr1 — первый массив объектов
- * @param {Array<Object>} arr2 — второй массив объектов
- * @param {string} key — имя свойства для сопоставления
- * @returns {Array<Object>} новый массив объединённых объектов
- * @throws {TypeError} если arr1/arr2 не массивы, либо key не непустая строка
- */
-const mergeBy = (arr1, arr2, key) => {
-    assertArray(arr1, 'arr1');
-    assertArray(arr2, 'arr2');
-    assertKey(key);
 
-    const addToMap = (map, obj) => {
+/**
+ * Добавляет объект в аккумулятор `map` по значению ключа `key`.
+ * Если объект уже есть в `map` — сливает свойства через {@link mergeInto}.
+ * Если элемент не является объектом или не содержит свойства `key`,
+ * он молча пропускается и в результат не попадает.
+ *
+ * @param {Map<*, Object>} map — аккумулятор: ключ → объединённый объект
+ * @param {*} obj — очередной элемент входного массива
+ * @returns {Map<*, Object>} тот же `map` после обработки элемента
+ */
+const addToMap = (map, obj, key) => {
         if (obj === null || typeof obj !== 'object') {
             return map;
         }
@@ -81,7 +78,28 @@ const mergeBy = (arr1, arr2, key) => {
         return map;
     };
 
-    const ans = [...arr1, ...arr2].reduce(addToMap, new Map());
+/**
+ * Объединяет два массива объектов по значению ключа `key`.
+ *
+ * Объекты с одинаковым значением `key` сливаются в один: массивные
+ * свойства объединяются без дубликатов, скалярные — берутся из первого
+ * встреченного объекта.
+ *
+ * Элементы, которые не являются объектами, а также объекты без свойства
+ * `key`, из результата исключаются — в выходном массиве они не появятся.
+ *
+ * @param {Array<Object>} arr1 — первый массив объектов
+ * @param {Array<Object>} arr2 — второй массив объектов
+ * @param {string} key — имя свойства для сопоставления
+ * @returns {Array<Object>} новый массив объединённых объектов
+ * @throws {TypeError} если arr1/arr2 не массивы, либо key не непустая строка
+ */
+const mergeBy = (arr1, arr2, key) => {
+    assertArray(arr1, 'arr1');
+    assertArray(arr2, 'arr2');
+    assertKey(key);
+
+    const ans = [...arr1, ...arr2].reduce((map, obj) => addToMap(map, obj, key, new Map());
 
     return [...ans.values()];
 };
