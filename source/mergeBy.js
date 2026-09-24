@@ -99,7 +99,7 @@ const mergeBy = (arr1, arr2, key) => {
     assertArray(arr2, 'arr2');
     assertKey(key);
 
-    const ans = [...arr1, ...arr2].reduce((map, obj) => addToMap(map, obj, key, new Map());
+    const ans = [...arr1, ...arr2].reduce((map, obj) => addToMap(map, obj, key), new Map());
 
     return [...ans.values()];
 };
